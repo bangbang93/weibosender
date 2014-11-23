@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "author": "bangbang93"
+  "author": "bangbang93",
+  "dependencies": {
+    "request": "^2.48.0"
+  }
 }

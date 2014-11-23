@@ -6,20 +6,61 @@
   <body>
     <textarea name="weibo" rows="8" cols="40" id="status"></textarea>
     <button name="button" id="submit">发送</button>
+    <p id="left">
+      140
+    </p>
+    <img id="img" style="width: 400px">
   </body>
   <script charset="utf-8">
     window.$ = window.jQuery = require("lib/jquery.min.js");
   </script>
   <script charset="utf-8">
   var ipc = require('ipc');
+  var pic;
     $(document).ready(function (){
       $('#submit').on('click', function (){
         console.log('click');
         var status = $('#status').val();
-        ipc.send('submit',{
-          status: status
-        });
+        if (!!pic){
+          ipc.send('submitPic', {
+            status: status,
+            pic: pic
+          })
+        } else {
+          ipc.send('submit',{
+            status: status
+          });
+        }
       })
+      $('#status').on('keydown', function (){
+        var that = $(this);
+        $('#left').text(140-that.val().length);
+      });
+      document.getElementsByTagName("textarea")[0].addEventListener('paste', function (e){
+        var clipboard = e.clipboardData;
+        for (var i=0;i<clipboard.items.length;i++){
+          if(clipboard.items[i].kind == 'file' || clipboard.items[i].type.indexOf('image') > -1) {
+            var imageFile = clipboard.items[i].getAsFile();
+            if (imageFile.type.indexOf('image') == -1){
+              alert('只能上传图片');
+              continue;
+            } else {
+              var reader = new FileReader();
+                reader.onload = function(event){
+                    var buffer = new Buffer(event.target.result.substr(22), 'base64');
+                    var fs = require('fs');
+                    pic = new Date().getTime() + '.png';
+                    fs.writeFile(pic, buffer, function (err){
+                      console.log(err);
+                    });
+                    $('#img').attr('src', event.target.result);
+                };
+                reader.readAsDataURL(imageFile);
+              }
+            }
+          }
+      })
+
     })
   </script>
 </html>

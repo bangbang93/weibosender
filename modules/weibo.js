@@ -18,7 +18,7 @@ exports.showWindow = function (){
   }
   var sendWindow = new Window({
     center: true,
-    height: 200,
+    height: 250,
     width: 450,
     resizable: false
   });
@@ -31,20 +31,47 @@ exports.showWindow = function (){
   var contents = sendWindow.webContents;
   contents.on('did-finish-load', function (){
     ipc.on('submit', function (event, data){
-      console.log(data);
       request.post('https://api.weibo.com/2/statuses/update.json',{
         form:{
           access_token: auth.access_token,
           status: data.status
         }
       }, function (err, res, body){
-        if (body.created_at){
-          dialog.showMessageBox(null, {
+        body = JSON.parse(body);
+        if (!!body.created_at){
+          dialog.showMessageBox({
             type: 'info',
-            message: '发送成功'
+            message: '发送成功',
+            buttons: ['确定']
           });
+          sendWindow.close();
+        } else {
+          console.log(body);
         }
-        sendWindow.close();
+      })
+    });
+    ipc.on('submitPic', function (event, data){
+      request.post('https://upload.api.weibo.com/2/statuses/upload.json',{
+        formData:{
+          access_token: auth.access_token,
+          status: data.status,
+          pic: fs.createReadStream(data.pic)
+        }
+      }, function (err, res, body){
+        body = JSON.parse(body);
+        if (!!body.created_at){
+          dialog.showMessageBox({
+            type: 'info',
+            message: '发送成功',
+            buttons: ['确定']
+          });
+          sendWindow.close();
+          fs.unlink(data.pic, function (err){
+            console.log(err);
+          });
+        } else {
+          console.log(body);
+        }
       })
     })
   })
