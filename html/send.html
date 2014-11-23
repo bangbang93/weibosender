@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <title>发送微博</title>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <textarea name="weibo" rows="8" cols="40" id="status"></textarea>
+    <button name="button" id="submit">发送</button>
+  </body>
+  <script charset="utf-8">
+    window.$ = window.jQuery = require("lib/jquery.min.js");
+  </script>
+  <script charset="utf-8">
+  var ipc = require('ipc');
+    $(document).ready(function (){
+      $('#submit').on('click', function (){
+        console.log('click');
+        var status = $('#status').val();
+        ipc.send('submit',{
+          status: status
+        });
+      })
+    })
+  </script>
+</html>

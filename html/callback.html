@@ -1,0 +1,17 @@
+<script charset="utf-8">
+  var ipc = require('ipc');
+  var queryString = location.search.match(/[\?\&][^\?\&]+=[^\?\&]+/g);
+  var split = /(.*)=(.*)/i;
+  var query = {};
+  if (!!queryString){
+      queryString.forEach(function (e){
+          var r = split.exec(e);
+          if (!!r){
+            var key = r[1].substring(1);
+            var value = r[2];
+            query[r[1].substring(1)] = r[2];
+          }
+      });
+  }
+  alert(JSON.stringify(query));
+</script>
