@@ -10,11 +10,12 @@ var window;
 
 var auth;
 
-fs.readFile(path.join(app.getDataPath(), 'auth.json'), function (err, data){
-  auth = JSON.parse(data);
-})
-
 exports.showWindow = function (){
+  if (!auth){
+    fs.readFile(path.join(app.getDataPath(), 'auth.json'), function (err, data){
+      auth = JSON.parse(data);
+    })
+  }
   var sendWindow = new Window({
     center: true,
     height: 200,
