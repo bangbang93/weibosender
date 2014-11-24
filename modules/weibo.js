@@ -34,8 +34,8 @@ exports.showWindow = function (){
   });
   var contents = sendWindow.webContents;
   contents.on('did-finish-load', function (){
-    ipc.on('submit', sendWeibo);
-    ipc.on('submitPic', sendWeiboPic);
+    ipc.on('submit', sendWeibo(sendWindow));
+    ipc.on('submitPic', sendWeiboPic(sendWindow));
   })
 };
 
@@ -56,14 +56,42 @@ exports.auth = function (){
   });
 };
 
-var sendWeibo = function (event, data){
-  request.post('https://api.weibo.com/2/statuses/update.json',{
-    form:{
-      access_token: auth.access_token,
-      status: data.status
-    }
-  }, function (err, res, body){
-    try {
+var sendWeibo = function (sendWindow){
+  return function (event, data){
+    request.post('https://api.weibo.com/2/statuses/update.json',{
+      form:{
+        access_token: auth.access_token,
+        status: data.status
+      }
+    }, function (err, res, body){
+      try {
+        body = JSON.parse(body);
+        if (!!body.created_at){
+          dialog.showMessageBox({
+            type: 'info',
+            message: '发送成功',
+            buttons: ['确定']
+          });
+          sendWindow.close();
+        } else {
+          console.log(body);
+        }
+      } catch (e){
+        console.log(body);
+      }
+    })
+  };
+};
+
+var sendWeiboPic = function (sendWindow){
+  return function (event, data){
+    request.post('https://upload.api.weibo.com/2/statuses/upload.json',{
+      formData:{
+        access_token: auth.access_token,
+        status: data.status,
+        pic: fs.createReadStream(data.pic)
+      }
+    }, function (err, res, body){
       body = JSON.parse(body);
       if (!!body.created_at){
         dialog.showMessageBox({
@@ -72,38 +100,14 @@ var sendWeibo = function (event, data){
           buttons: ['确定']
         });
         sendWindow.close();
+        fs.unlink(data.pic, function (err){
+          console.log(err);
+        });
       } else {
         console.log(body);
       }
-    } catch (e){
-      console.log(body);
-    }
-  })
-};
-
-var sendWeiboPic = function (event, data){
-  request.post('https://upload.api.weibo.com/2/statuses/upload.json',{
-    formData:{
-      access_token: auth.access_token,
-      status: data.status,
-      pic: fs.createReadStream(data.pic)
-    }
-  }, function (err, res, body){
-    body = JSON.parse(body);
-    if (!!body.created_at){
-      dialog.showMessageBox({
-        type: 'info',
-        message: '发送成功',
-        buttons: ['确定']
-      });
-      sendWindow.close();
-      fs.unlink(data.pic, function (err){
-        console.log(err);
-      });
-    } else {
-      console.log(body);
-    }
-  })
+    })
+  };
 };
 
 var checkAuth = function (){
