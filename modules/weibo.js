@@ -25,6 +25,11 @@ exports.showWindow = function (){
         sendWindow.close();
       }
     })
+  } else {
+    if (!checkAuth()){
+      exports.auth();
+      sendWindow.close();
+    }
   }
   window = sendWindow;
   sendWindow.loadUrl('file://' + path.join(__dirname, '../html/send.html'));
@@ -111,7 +116,10 @@ var sendWeiboPic = function (sendWindow){
 };
 
 var checkAuth = function (){
-  var now = new Date().getTime();
+  var now = new Date().getTime()/1000;
   auth.time = auth.time || 0;
-  return now <= auth.time + auth.expires_in;
+  auth.expires_in = parseInt(auth.expires_in);
+  console.log(auth.time + auth.expires_in);
+  console.log(now < auth.time + auth.expires_in);
+  return now < auth.time + auth.expires_in;
 };
