@@ -29,3 +29,9 @@ fs.exists(path.join(app.getDataPath(), 'auth.json'), function (exists){
     weibo.auth();
   }
 });
+
+fs.exists(app.getDataPath(), function (exists){
+    if (!exists){
+        fs.mkdir(app.getDataPath());
+    }
+});
