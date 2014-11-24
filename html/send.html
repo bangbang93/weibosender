@@ -19,8 +19,11 @@
   var pic;
     $(document).ready(function (){
       $('#submit').on('click', function (){
-        console.log('click');
         var status = $('#status').val();
+        if (!status){
+          alert('内容不可为空');
+          return;
+        }
         if (!!pic){
           ipc.send('submitPic', {
             status: status,
@@ -31,11 +34,15 @@
             status: status
           });
         }
-      })
-      $('#status').on('keydown', function (){
+      });
+      $('#status').on('keydown', function (e){
+        if (e.ctrlKey && e.keyCode == 13){
+          $('#submit').click();
+        }
+      }).on('keyup', function (){
         var that = $(this);
         $('#left').text(140-that.val().length);
-      });
+      }).focus();
       document.getElementsByTagName("textarea")[0].addEventListener('paste', function (e){
         var clipboard = e.clipboardData;
         for (var i=0;i<clipboard.items.length;i++){
@@ -43,7 +50,6 @@
             var imageFile = clipboard.items[i].getAsFile();
             if (imageFile.type.indexOf('image') == -1){
               alert('只能上传图片');
-              continue;
             } else {
               var reader = new FileReader();
                 reader.onload = function(event){

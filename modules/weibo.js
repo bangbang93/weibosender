@@ -15,7 +15,8 @@ exports.showWindow = function (){
     center: true,
     height: 250,
     width: 450,
-    resizable: false
+    resizable: false,
+    'always-on-top': true
   });
   if (!auth){
     fs.readFile(path.join(app.getDataPath(), 'auth.json'), function (err, data){
@@ -39,6 +40,7 @@ exports.showWindow = function (){
   });
   var contents = sendWindow.webContents;
   contents.on('did-finish-load', function (){
+    sendWindow.focus();
     ipc.on('submit', sendWeibo(sendWindow));
     ipc.on('submitPic', sendWeiboPic(sendWindow));
   })
