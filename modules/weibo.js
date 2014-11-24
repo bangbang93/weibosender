@@ -15,8 +15,7 @@ exports.showWindow = function (){
     center: true,
     height: 250,
     width: 450,
-    resizable: false,
-    'always-on-top': true
+    resizable: false
   });
   if (!auth){
     fs.readFile(path.join(app.getDataPath(), 'auth.json'), function (err, data){
