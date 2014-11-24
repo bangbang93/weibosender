@@ -11,17 +11,21 @@ var window;
 var auth;
 
 exports.showWindow = function (){
-  if (!auth){
-    fs.readFile(path.join(app.getDataPath(), 'auth.json'), function (err, data){
-      auth = JSON.parse(data);
-    })
-  }
   var sendWindow = new Window({
     center: true,
     height: 250,
     width: 450,
     resizable: false
   });
+  if (!auth){
+    fs.readFile(path.join(app.getDataPath(), 'auth.json'), function (err, data){
+      auth = JSON.parse(data);
+      if (!checkAuth()){
+        exports.auth();
+        sendWindow.close();
+      }
+    })
+  }
   window = sendWindow;
   sendWindow.loadUrl('file://' + path.join(__dirname, '../html/send.html'));
   // sendWindow.openDevTools();
@@ -46,6 +50,7 @@ exports.auth = function (){
     window = null;
   });
   ipc.on('auth', function (event, auth){
+    auth.time = new Date().getTime()/1000;
     fs.writeFile(path.join(app.getDataPath(), 'auth.json'), JSON.stringify(auth));
     authWindow.close();
   });
@@ -99,4 +104,10 @@ var sendWeiboPic = function (event, data){
       console.log(body);
     }
   })
+};
+
+var checkAuth = function (){
+  var now = new Date().getTime();
+  auth.time = auth.time || 0;
+  return now <= auth.time + auth.expires_in;
 };

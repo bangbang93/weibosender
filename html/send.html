@@ -9,7 +9,7 @@
     <p id="left">
       140
     </p>
-    <img id="img" style="height: 400px">
+    <img id="img" style="height: 400px" onerror="$(this).hide();" src="">
   </body>
   <script charset="utf-8">
     window.$ = window.jQuery = require("lib/jquery.min.js");
@@ -53,7 +53,7 @@
                     fs.writeFile(pic, buffer, function (err){
                       console.log(err);
                     });
-                    $('#img').attr('src', event.target.result);
+                    $('#img').attr('src', event.target.result).show();
                     var remote = require('remote');
                     var window = remote.getCurrentWindow();
                     var size = window.getSize();
