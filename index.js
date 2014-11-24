@@ -32,6 +32,24 @@ fs.exists(path.join(app.getDataPath(), 'auth.json'), function (exists){
 
 fs.exists(app.getDataPath(), function (exists){
     if (!exists){
-        fs.mkdir(app.getDataPath());
+        fs.mkdir(app.getDataPath(), function (){
+            fs.mkdir(path.join(app.getDataPath(), 'tmp'))
+        });
+    } else {
+        fs.exists(path.join(app.getDataPath(), 'tmp'), function (exists){
+            if (!exists){
+                fs.mkdir(path.join(app.getDataPath(), 'tmp'))
+            } else {
+                fs.readdir(path.join(app.getDataPath(), 'tmp'), function (err, files){
+                    if (err){
+                        throw(err);
+                    } else {
+                        files.forEach(function (e){
+                            fs.unlink(path.join(path.join(app.getDataPath(), 'tmp'), e));
+                        })
+                    }
+                });
+            }
+        })
     }
 });

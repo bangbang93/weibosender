@@ -96,7 +96,7 @@ var sendWeiboPic = function (sendWindow){
       formData:{
         access_token: auth.access_token,
         status: data.status,
-        pic: fs.createReadStream(data.pic)
+        pic: fs.createReadStream(path.join(path.join(app.getDataPath(), 'tmp'), data.pic))
       }
     }, function (err, res, body){
       body = JSON.parse(body);
