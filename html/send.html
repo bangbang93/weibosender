@@ -9,7 +9,7 @@
     <p id="left">
       140
     </p>
-    <img id="img" style="width: 400px">
+    <img id="img" style="height: 400px">
   </body>
   <script charset="utf-8">
     window.$ = window.jQuery = require("lib/jquery.min.js");
@@ -54,6 +54,11 @@
                       console.log(err);
                     });
                     $('#img').attr('src', event.target.result);
+                    var remote = require('remote');
+                    var window = remote.getCurrentWindow();
+                    var size = window.getSize();
+                    window.setSize(size[0], size[1] + 400);
+                    window.center();
                 };
                 reader.readAsDataURL(imageFile);
               }

@@ -37,15 +37,19 @@ exports.showWindow = function (){
           status: data.status
         }
       }, function (err, res, body){
-        body = JSON.parse(body);
-        if (!!body.created_at){
-          dialog.showMessageBox({
-            type: 'info',
-            message: '发送成功',
-            buttons: ['确定']
-          });
-          sendWindow.close();
-        } else {
+        try {
+          body = JSON.parse(body);
+          if (!!body.created_at){
+            dialog.showMessageBox({
+              type: 'info',
+              message: '发送成功',
+              buttons: ['确定']
+            });
+            sendWindow.close();
+          } else {
+            console.log(body);
+          }
+        } catch (e){
           console.log(body);
         }
       })

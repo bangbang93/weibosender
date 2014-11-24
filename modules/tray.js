@@ -19,7 +19,7 @@ module.exports = exports = function (app){
         label: '发微博',
         type: 'normal',
         click: function (){
-          console.log('send weibo');
+          app.emit('sendWeibo');
         }
       }
     ];
