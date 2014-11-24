@@ -4,7 +4,7 @@
 var app = require('app');
 var fs = require('fs');
 var path = require('path');
-var weibo = require('./modules/weibo')
+var weibo = require('./modules/weibo');
 
 app.on('ready', function (){
     var cut = require('./modules/shortcut');
@@ -22,7 +22,7 @@ app.on('will-quit', function (){
 
 app.on('sendWeibo', function (){
   weibo.showWindow();
-})
+});
 
 fs.exists(path.join(app.getDataPath(), 'auth.json'), function (exists){
   if (!exists){
