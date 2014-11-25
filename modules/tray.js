@@ -9,20 +9,18 @@ var icon;
 module.exports = exports = function (app){
     icon = new Tray(path.join(__dirname,'../img/icon.png'));
     var menus = [{
+            label: '发微博',
+            type: 'normal',
+            click: function (){
+                app.emit('sendWeibo');
+            }
+        },{
         label: '退出',
         type: 'normal',
         click: function (){
           app.emit('quitRequest');
         }
-      },
-      {
-        label: '发微博',
-        type: 'normal',
-        click: function (){
-          app.emit('sendWeibo');
-        }
-      }
-    ];
+      }];
     var contextMenu = menu.buildFromTemplate(menus);
     icon.setToolTip('发微博');
     icon.setContextMenu(contextMenu);
