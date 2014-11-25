@@ -2,7 +2,11 @@
  * Created by bangbang on 14/11/23.
  */
 var cut = require('global-shortcut');
-var weibo = require('./weibo');
+var app;
 var send = cut.register('alt+shift+s', function (){
-    weibo.showWindow();
+    app.emit('sendWeibo');
 });
+
+module.exports = function (a){
+    app = a;
+};

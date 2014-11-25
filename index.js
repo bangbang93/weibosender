@@ -5,11 +5,10 @@ var app = require('app');
 var fs = require('fs');
 var path = require('path');
 var weibo = require('./modules/weibo');
+var cut = require('./modules/shortcut')(app);
+var menu = require('./modules/tray')(app);
 
 app.on('ready', function (){
-    var cut = require('./modules/shortcut');
-    var menu = require('./modules/tray')(app);
-
 });
 
 app.on('quitRequest', function (){

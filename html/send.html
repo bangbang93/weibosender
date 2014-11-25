@@ -50,26 +50,28 @@
             var imageFile = clipboard.items[i].getAsFile();
             if (imageFile.type.indexOf('image') == -1){
               alert('只能上传图片');
+            } else if (imageFile.size == 0) {
+              alert('粘贴长度为零（目前只有QQ会出现这种问题，我还没解决）')
             } else {
-              var reader = new FileReader();
+                var reader = new FileReader();
                 reader.onload = function(event){
-                    var buffer = new Buffer(event.target.result.substr(22), 'base64');
-                    var fs = require('fs');
-                    var path = require('path');
-                    var app = require('remote').require('app');
-                    pic = new Date().getTime() + '';
+                  var buffer = new Buffer(event.target.result.substr(22), 'base64');
+                  var fs = require('fs');
+                  var path = require('path');
+                  var app = require('remote').require('app');
+                  pic = new Date().getTime() + '';
                   console.log(app.getDataPath());
-                    fs.writeFile(path.join(path.join(app.getDataPath(), 'tmp'), pic), buffer, function (err){
-                      console.log(err);
-                    });
-                    $('#img').attr('src', event.target.result).show();
-                    var remote = require('remote');
-                    var window = remote.getCurrentWindow();
-                    var size = window.getSize();
-                    if (size[1] < 650){
-                      window.setSize(size[0], size[1] + 400);
-                      window.center();
-                    }
+                  fs.writeFile(path.join(path.join(app.getDataPath(), 'tmp'), pic), buffer, function (err){
+                    console.log(err);
+                  });
+                  $('#img').attr('src', event.target.result).show();
+                  var remote = require('remote');
+                  var window = remote.getCurrentWindow();
+                  var size = window.getSize();
+                  if (size[1] < 650){
+                    window.setSize(size[0], size[1] + 400);
+                    window.center();
+                  }
                 };
                 reader.readAsDataURL(imageFile);
               }
