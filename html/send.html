@@ -19,11 +19,17 @@
   var pic;
     $(document).ready(function (){
       $('#submit').on('click', function (){
+        var that = $(this);
         var status = $('#status').val();
         if (!status){
           alert('内容不可为空');
           return;
         }
+        if (status.length > 140){
+          alert('内容超长');
+          return;
+        }
+        that.disable();
         if (!!pic){
           ipc.send('submitPic', {
             status: status,
